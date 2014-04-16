@@ -1,7 +1,9 @@
 var express = require('express');
 var path = require('path');
+var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
+var webhook = require('./routes/webhook');
 
 var app = express();
 
@@ -11,8 +13,10 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'html');
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.urlencoded());
 
 app.use('/', routes);
+app.use('/webhook', webhook);
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
