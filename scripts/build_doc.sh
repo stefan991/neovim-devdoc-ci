@@ -6,11 +6,12 @@ LOG_OUTPUT_FILE=$3
 DOCUMENTATION_OUTPUT_DIR=$4
 
 echo "generating build..."
-cd $GIT_DIR >> $LOG_OUTPUT_FILE 2>&1
-git fetch origin >> $LOG_OUTPUT_FILE 2>&1
-git checkout $GIT_SHA >> $LOG_OUTPUT_FILE 2>&1
-doxygen >> $LOG_OUTPUT_FILE 2>&1
-mv documentation/html $DOCUMENTATION_OUTPUT_DIR >> $LOG_OUTPUT_FILE 2>&1
+cd $GIT_DIR >> $LOG_OUTPUT_FILE 2>&1 || exit $?
+git fetch origin >> $LOG_OUTPUT_FILE 2>&1 || exit $?
+git checkout $GIT_SHA >> $LOG_OUTPUT_FILE 2>&1 || exit $?
+doxygen >> $LOG_OUTPUT_FILE 2>&1 || exit $?
+mv documentation/html $DOCUMENTATION_OUTPUT_DIR >> $LOG_OUTPUT_FILE 2>&1 \
+  || exit $?
 rm -rf documentation
 echo "done."
 

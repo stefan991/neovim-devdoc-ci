@@ -20,7 +20,6 @@ function execute_build(db, config, build) {
     var log_output_file = format(config.log_output_file, build.id);
     var doc_output_dir = format(config.documentation_output_dir, build.id);
     var args = [git_dir, build.data.id, log_output_file, doc_output_dir];
-    console.log(args);
     var process = child_process.spawn('./scripts/build_doc.sh',
         args, { 'stdio': 'ignore' });
     process.on('exit', function(code) {
