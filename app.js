@@ -3,6 +3,7 @@ var path = require('path');
 var bodyParser = require('body-parser');
 
 var db = require('./db');
+var builder = require('./builder');
 var routes = require('./routes/index');
 var webhook = require('./routes/webhook');
 
@@ -20,6 +21,7 @@ app.use(bodyParser.urlencoded());
 
 app.use(function(req, res, next) {
     req.db = db;
+    req.builder = builder;
     next()
 });
 

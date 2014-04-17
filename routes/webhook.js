@@ -22,9 +22,13 @@ function handle_push(req, res, payload) {
         res.send('Ignoring repo: ' + payload.repository.url);
         return;
     }
-    console.log(payload.head_commit);
-    req.db.create_build(payload.head_commit.id, payload.head_commit, null);
-    res.send('OK.');
+    var head_commit = payload.head_commit;
+    var builder = req.builder;
+    var db = req.db;
+    req.db.create_build(head_commit.id, head_commit, function() {
+        res.send('OK.');
+        builder.build_next(db);
+    });
 }
 
 module.exports = router;
