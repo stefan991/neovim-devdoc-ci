@@ -3,7 +3,31 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-a {
-  color: #00B7FF;
+table {
+  width: 100%;
+}
+
+th {
+  text-align: left;
+}
+
+.build-new {
+  color: grey;
+}
+
+.build-started {
+  color: orange;
+}
+
+.build-finished {
+  color: green;
+}
+
+.build-error {
+  color: red;
+}
+
+.build-timeout {
+  color: grey;
 }
 

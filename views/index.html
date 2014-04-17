@@ -6,18 +6,49 @@
   </head>
   <body>
     <h1>Neovim Development Documentation Builds</h1>
-    <ul>
+    <table>
+      <tr>
+        <th>Build</th>
+        <th>Message</th>
+        <th>Commit</th>
+        <th>Author</th>
+        <th>Committer</th>
+        <th>Output</th>
+        <th>Log</th>
+      </tr>
     <% builds.forEach(function(build) { %>
-      <li>
-        <%= build.id %> (<%= build.state %>):
-        <%= build.git_commit_sha %>
-        <%= build.data.message %>
-        <%= build.data.author.name %>
-        <a href="<%= build.build_url %>">(doc)</a>
-        <a href="<%= build.log_url %>">(log)</a>
-      </li>
+      <tr>
+        <td>
+          <span title="<%= build.state_name %>"
+                class="build-<%= build.state_name %>">
+            #<%= build.id %>
+          </span>
+        </td>
+        <td><%= build.data.message.substring(0, 80) %></td>
+        <td>
+          <a href="<%= build.data.url %>">
+            <%= build.git_commit_sha.substring(0, 7) %>
+          </a>
+        </td>
+        <td>
+          <a href="https://github.com/<%= build.data.author.username %>">
+            <%= build.data.author.name %>
+          </a>
+        </td>
+        <td>
+          <a href="https://github.com/<%= build.data.committer.username %>">
+            <%= build.data.committer.name %>
+          </a>
+        </td>
+        <td>
+          <a href="<%= build.build_url %>">output</a>
+        </td>
+        <td>
+          <a href="<%= build.log_url %>">log</a>
+        </td>
+      </tr>
     <% }); %>
-    </ul>
+    </table>
   </body>
 </html>
 

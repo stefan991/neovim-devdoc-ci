@@ -5,12 +5,14 @@ var BUILD_STATE_STARTED = 1;
 var BUILD_STATE_FINISHED = 2;
 var BUILD_STATE_ERROR = 3;
 var BUILD_STATE_TIMEOUT = 4;
+var build_state_names = ['new', 'started', 'finished', 'error', 'timeout'];
 
 exports.BUILD_STATE_NEW = BUILD_STATE_NEW;
 exports.BUILD_STATE_STARTED = BUILD_STATE_STARTED;
 exports.BUILD_STATE_FINISHED = BUILD_STATE_FINISHED;
 exports.BUILD_STATE_ERROR = BUILD_STATE_ERROR;
 exports.BUILD_STATE_TIMEOUT = BUILD_STATE_TIMEOUT;
+exports.build_state_names = build_state_names;
 
 var db;
 
