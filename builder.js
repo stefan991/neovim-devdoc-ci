@@ -20,18 +20,27 @@ function execute_build(db, config, build) {
     var log_output_file = format(config.log_output_file, build.id);
     var doc_output_dir = format(config.documentation_output_dir, build.id);
     var args = [git_dir, build.data.id, log_output_file, doc_output_dir];
+    var timeout;
+    var timeout_happend = 0;
     var process = child_process.spawn('./scripts/build_doc.sh',
         args, { 'stdio': 'ignore' });
     process.on('exit', function(code) {
-        if (code) {
+        if (timeout_happend) {
+            db.update_build_state(build, db.BUILD_STATE_TIMEOUT);
+        } else if (code) {
             db.update_build_state(build, db.BUILD_STATE_ERROR);
         } else {
             db.update_build_state(build, db.BUILD_STATE_FINISHED);
         }
+        clearTimeout(timeout);
         is_building = 0;
         build_next(db);
     });
-    // TODO: Timeout
+    function timeout() {
+        process.kill('SIGKILL');
+        timeout_happend = 1;
+    }
+    setTimeout(timeout, config.build_timeout * 1000);
 }
 
 exports.build_next = build_next;
