@@ -2,10 +2,13 @@ var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser');
 
+var db = require('./db');
 var routes = require('./routes/index');
 var webhook = require('./routes/webhook');
 
 var app = express();
+
+db.init_db();
 
 // view engine setup
 app.engine('html', require('ejs').__express);
@@ -14,6 +17,11 @@ app.set('view engine', 'html');
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded());
+
+app.use(function(req, res, next) {
+    req.db = db;
+    next()
+});
 
 app.use('/', routes);
 app.use('/webhook', webhook);

@@ -23,6 +23,7 @@ function handle_push(req, res, payload) {
         return;
     }
     console.log(payload.head_commit);
+    req.db.create_build(payload.head_commit.id, payload.head_commit, null);
     res.send('OK.');
 }
 

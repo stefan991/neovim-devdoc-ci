@@ -1,12 +1,21 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
+    <title>Neovim Development Documentation Builds</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <h1>Neovim Development Documentation Builds</h1>
+    <ul>
+    <% builds.forEach(function(build) { %>
+      <li>
+        <%= build.id %> (<%= build.state %>):
+        <%= build.git_commit_sha %>
+        <%= build.data.message %>
+        <%= build.data.author.name %>
+      </li>
+    <% }); %>
+    </ul>
   </body>
 </html>
 
