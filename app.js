@@ -1,5 +1,6 @@
 var express = require('express');
 var path = require('path');
+var fs = require('fs');
 var bodyParser = require('body-parser');
 
 var db = require('./db');
@@ -7,9 +8,19 @@ var builder = require('./builder');
 var routes = require('./routes/index');
 var webhook = require('./routes/webhook');
 
+var config_file = process.argv[2] || './config.json';
+var config_data = fs.readFileSync(config_file);
+try {
+    var config = JSON.parse(config_data);
+} catch (err) {
+    console.log('There has been an error parsing your JSON.')
+    console.log(err);
+    var config = {}
+}
+
 var app = express();
 
-db.init_db();
+db.init_db(config);
 
 // view engine setup
 app.engine('html', require('ejs').__express);
@@ -22,6 +33,7 @@ app.use(bodyParser.urlencoded());
 app.use(function(req, res, next) {
     req.db = db;
     req.builder = builder;
+    req.config = config;
     next()
 });
 
@@ -64,5 +76,6 @@ module.exports = app;
 if (!module.parent) {
     app.listen(5000);
     console.log('Express started on port 5000');
+    builder.build_next(db, config);
 }
 

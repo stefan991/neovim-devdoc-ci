@@ -1,1 +1,4 @@
 node_modules/sqlite3/lib/binding
+config.json
+builds.db
+

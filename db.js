@@ -1,5 +1,4 @@
 var sqlite = require('sqlite3').verbose();
-var db = new sqlite.Database(':memory:');
 
 var BUILD_STATE_NEW = 0;
 var BUILD_STATE_STARTED = 1;
@@ -11,8 +10,11 @@ exports.BUILD_STATE_STARTED = BUILD_STATE_STARTED;
 exports.BUILD_STATE_FINISHED = BUILD_STATE_FINISHED;
 exports.BUILD_STATE_ERROR = BUILD_STATE_ERROR
 
-function init_db() {
-    db.run('CREATE TABLE builds ('
+var db;
+
+function init_db(config) {
+    db = new sqlite.Database(config.db_file);
+    db.run('CREATE TABLE IF NOT EXISTS builds ('
             + 'id INTEGER PRIMARY KEY AUTOINCREMENT, '
             + 'created_at INTEGER, '
             + 'state INTEGER, '
