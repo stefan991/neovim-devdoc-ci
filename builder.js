@@ -1,4 +1,5 @@
 var child_process = require('child_process');
+var fs = require('fs');
 var format = require('util').format;
 
 var is_building = 0;
@@ -34,13 +35,27 @@ function execute_build(db, config, build) {
         }
         clearTimeout(timeout);
         is_building = 0;
-        build_next(db);
+        update_latest_symlink(db, config);
+        build_next(db, config);
     });
     function timeout() {
         process.kill('SIGKILL');
         timeout_happend = 1;
     }
     setTimeout(timeout, config.build_timeout * 1000);
+}
+
+function update_latest_symlink(db, config) {
+    db.get_latest_finished_build(function(err, build) {
+        if (err) return;
+        var latest_doc_output_dir = format(config.documentation_output_dir,
+                                           build.id);
+        fs.unlink(config.latest_symlink, function(err) {
+            fs.symlink(latest_doc_output_dir,
+                       config.latest_symlink,
+                       function(err) {});
+        });
+    });
 }
 
 exports.build_next = build_next;

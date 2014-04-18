@@ -48,6 +48,7 @@ app.use(function(req, res, next) {
 });
 
 app.locals.base_url = config.base_url;
+app.locals.latest_documentation_url = config.latest_documentation_url;
 
 /// error handlers
 

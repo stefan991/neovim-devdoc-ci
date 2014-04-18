@@ -44,6 +44,18 @@ function get_next_build(cb) {
             });
 }
 
+function get_latest_finished_build(cb) {
+    db.get('SELECT id, created_at, state, git_commit_sha, data FROM builds '
+            + 'WHERE state = ? ORDER BY created_at DESC LIMIT 1',
+            [BUILD_STATE_FINISHED], function(err, build) {
+                if (build) {
+                    build.data = JSON.parse(build.data);
+                }
+                cb(err, build);
+            });
+}
+
+
 function update_build_state(build, new_state, cb) {
     db.run('UPDATE builds SET state = ? WHERE id = ?',
             [new_state, build.id], db);
@@ -65,6 +77,7 @@ function get_recent_builds(count, cb) {
 exports.init_db = init_db;
 exports.create_build = create_build;
 exports.get_next_build = get_next_build;
+exports.get_latest_finished_build = get_latest_finished_build;
 exports.update_build_state = update_build_state;
 exports.get_recent_builds= get_recent_builds;
 
