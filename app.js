@@ -47,6 +47,8 @@ app.use(function(req, res, next) {
     next(err);
 });
 
+app.locals.base_url = config.base_url;
+
 /// error handlers
 
 // development error handler
