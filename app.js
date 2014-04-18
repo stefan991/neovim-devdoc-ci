@@ -74,8 +74,9 @@ app.use(function(err, req, res, next) {
 module.exports = app;
 
 if (!module.parent) {
-    app.listen(5000);
-    console.log('Express started on port 5000');
+    var port = config.http_port
+    app.listen(port);
+    console.log('Express started on port ' + port);
     builder.build_next(db, config);
 }
 
