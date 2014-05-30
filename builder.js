@@ -1,4 +1,5 @@
 var child_process = require('child_process');
+var exec = require('child_process').exec;
 var fs = require('fs');
 var format = require('util').format;
 
@@ -10,6 +11,15 @@ function build_next(db, config) {
         if (build) {
             execute_build(db, config, build);
         }
+    });
+}
+
+function delete_old_builds(db, config) {
+    db.get_builds_to_delete(config.recent_builds, function(err, builds) {
+        if (err) throw err;
+        builds.forEach(function(build) {
+            delete_build(db, config, build);
+        });
     });
 }
 
@@ -37,6 +47,7 @@ function execute_build(db, config, build) {
         is_building = 0;
         update_latest_symlink(db, config);
         build_next(db, config);
+        delete_old_builds(db, config);
     });
     function timeout() {
         process.kill('SIGKILL');
@@ -58,5 +69,23 @@ function update_latest_symlink(db, config) {
     });
 }
 
+function delete_build(db, config, build) {
+    db.update_build_deleted(build, 1);
+    var log_output_file = format(config.log_output_file, build.id);
+    var doc_output_dir = format(config.documentation_output_dir, build.id);
+    fs.unlink(log_output_file, function(err) {
+        if (err) {
+            console.log('error deleteing log file:', log_output_file, err);
+        }
+    });
+    exec('rm -r ' + doc_output_dir ,function(err, out) {
+        if (err) {
+            console.log('rm doc_output_dir stdout:', out);
+            console.log('rm doc_output_dir stderr:', err);
+        }
+    });
+}
+
 exports.build_next = build_next;
+exports.delete_old_builds = delete_old_builds;
 

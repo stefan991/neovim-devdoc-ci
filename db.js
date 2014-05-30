@@ -23,7 +23,10 @@ function init_db(config) {
             + 'created_at INTEGER, '
             + 'state INTEGER, '
             + 'git_commit_sha TEXT, '
-            + 'data TEXT)');
+            + 'data TEXT'
+            + 'deleted INTEGER DEFAULT 0)');
+    db.run('ALTER TABLE builds ADD COLUMN deleted INTEGER DEFAULT 0',
+            function (err) { /* Ignore duplicate column name */ });
 }
 
 function create_build(git_commit_sha, data, cb) {
@@ -61,9 +64,30 @@ function update_build_state(build, new_state, cb) {
             [new_state, build.id], db);
 }
 
+function update_build_deleted(build, new_deleted, cb) {
+    db.run('UPDATE builds SET deleted = ? WHERE id = ?',
+            [new_deleted, build.id], db);
+}
+
 function get_recent_builds(count, cb) {
     db.all('SELECT id, created_at, state, git_commit_sha, data FROM builds '
             + 'ORDER BY created_at DESC LIMIT ?', [count],
+            function (err, builds) {
+                if (builds) {
+                    builds.forEach(function(build) {
+                      build.data = JSON.parse(build.data);
+                    });
+                }
+                cb(err, builds);
+            });
+}
+
+function get_builds_to_delete(count_not_to_delete, cb) {
+    db.all('SELECT id, created_at, state, git_commit_sha, data, deleted '
+            + 'FROM builds '
+            + 'WHERE deleted = 0 '
+            + 'ORDER BY created_at DESC LIMIT 200 OFFSET ?',
+            [count_not_to_delete],
             function (err, builds) {
                 if (builds) {
                     builds.forEach(function(build) {
@@ -79,5 +103,7 @@ exports.create_build = create_build;
 exports.get_next_build = get_next_build;
 exports.get_latest_finished_build = get_latest_finished_build;
 exports.update_build_state = update_build_state;
-exports.get_recent_builds= get_recent_builds;
+exports.update_build_deleted = update_build_deleted;
+exports.get_recent_builds = get_recent_builds;
+exports.get_builds_to_delete = get_builds_to_delete;
 

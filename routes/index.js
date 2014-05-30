@@ -4,7 +4,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    req.db.get_recent_builds(10, function(err, builds) {
+    req.db.get_recent_builds(req.config.recent_builds, function(err, builds) {
         if (err) return next(err);
         builds.forEach(function(build) {
             build.state_name = req.db.build_state_names[build.state];

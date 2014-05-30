@@ -48,7 +48,10 @@ Your `config.json` should look like this (without the comments):
     // the secret needed to configure the github webhook
     "secret": "someSecret",
     // time in seconds after wich a build should timeout
-    "build_timeout": 300
+    "build_timeout": 300,
+
+    // number of displayed builds, older ones get deleted
+    "recent_builds": 30
  }
 
 ```

@@ -81,5 +81,6 @@ if (!module.parent) {
     app.listen(port);
     console.log('Express started on port ' + port);
     builder.build_next(db, config);
+    builder.delete_old_builds(db, config);
 }
 
