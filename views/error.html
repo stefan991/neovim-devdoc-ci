@@ -1,13 +1,14 @@
-<!DOCTYPE html>
-<html>
-  <head>
-  <title><%= error.status %> <%= message %></title>
-    <link rel='stylesheet' href='<%= base_url %>stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= message %></h1>
-    <h2><%= error.status %></h2>
+<% var title = status + ' ' +  message; %>
+<% include header %>
+
+<section class="front-section">
+  <div class="container">
+    <h2><%= status %> <%= message %></h2>
+    <% if (Object.keys(error).length) { %>
     <pre><%= error.stack %></pre>
-  </body>
-</html>
+    <% }; %>
+  </div>
+</section>
+
+<% include footer %>
 
