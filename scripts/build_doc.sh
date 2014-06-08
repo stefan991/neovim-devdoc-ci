@@ -9,9 +9,10 @@ echo "generating build..."
 cd $GIT_DIR >> $LOG_OUTPUT_FILE 2>&1 || exit $?
 git fetch origin >> $LOG_OUTPUT_FILE 2>&1 || exit $?
 git checkout $GIT_SHA >> $LOG_OUTPUT_FILE 2>&1 || exit $?
+mkdir build 2>&1 || exit $?
 doxygen >> $LOG_OUTPUT_FILE 2>&1 || exit $?
-mv documentation/html $DOCUMENTATION_OUTPUT_DIR >> $LOG_OUTPUT_FILE 2>&1 \
+mv build/doxygen/html $DOCUMENTATION_OUTPUT_DIR >> $LOG_OUTPUT_FILE 2>&1 \
   || exit $?
-rm -rf documentation
+rm -rf build/doxygen
 echo "done."
 
